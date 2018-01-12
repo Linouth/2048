@@ -30,31 +30,63 @@ int main(void) {
 }
 
 void moveTiles(int *board, int inp) {
-  if (inp == 1) swipeUp();
+  if (inp == 1) swipeUp(board);
   rotateBoard(board);
-  if (inp == 2) swipeUp();
+  if (inp == 2) swipeUp(board);
   rotateBoard(board);
-  if (inp == 3) swipeUp();
+  if (inp == 3) swipeUp(board);
   rotateBoard(board);
-  if (inp == 4) swipeUp();
+  if (inp == 4) swipeUp(board);
   rotateBoard(board);
 }
 
-void swipeUp() {
-  // Write function here
+int swipeUp(board) {
+  int n = BOARD_SIZE;
+  int x, y, i, j;
+
+  // Do something for each row
+  for (x = 0; x < n; x++) {
+
+    // Swipe all tiles to the top, and do this 10 times (how many times can this happen, max?)
+    for (j = 0; j < 10; j++) {
+      for (i = n-1; i = 0; i--) {
+        if (board[x][i] == 0 || board[x][i+1] != 0)
+          board[x][i] = board[x][i+1];
+      }
+    }
+
+    // Add up all equal tiles
+    for (y = 0; y < n; y++) {
+      if (board[x][y] == board[x][y+1]) {
+        board[x][y] = 2 * board[x][y];
+        board[x][y+1] = 0;
+      }
+    }
+
+    // Again, swipe all tiles to the top (try it 10 times??)
+    for (j = 0; j < 10; j++) {
+      for (i = n-1; i = 0; i--) {
+        if (board[x][i] == 0 || board[x][i+1] != 0)
+          board[x][i] = board[x][i+1];
+      }
+    }
+
+  }
+
+  return board;
 }
 
 void rotateBoard(int *board) {
   int n = BOARD_SIZE;
   int tempBoard[n][n] = {0}
-  
+
   // copy the current board into tempBoard[][]
   for(int i=0; i<cols; i++) {
     for(int j=0; j<rows; j++) {
         tempBoard[i][j] = board[i][j];
     }
   }
-  
+
   // rotate board[][] 90 degrees clockwise
   for(int i=0; i<cols; i++) {
     for(int j=0; j<rows; j++) {
@@ -122,7 +154,7 @@ int userInput() {
     }
 }
 
-saveBoard(int board[][]) {
+void saveBoard(int board[][]) {
   int x, y;
   FILE *save;
 
