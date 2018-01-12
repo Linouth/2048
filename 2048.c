@@ -32,6 +32,25 @@ void moveTiles(int board[][], int inp) {
   // Write function
 }
 
+void rotateBoard(int *board) {
+  int n = BOARD_SIZE;
+  int tempBoard[n][n] = {0}
+  
+  // copy the current board into tempBoard[][]
+  for(int i=0; i<cols; i++) {
+    for(int j=0; j<rows; j++) {
+        tempBoard[i][j] = board[i][j];
+    }
+  }
+  
+  // rotate board[][] 90 degrees clockwise
+  for(int i=0; i<cols; i++) {
+    for(int j=0; j<rows; j++) {
+        board[i][j] = tempBoard[rows-1-j][i];
+    }
+  }
+}
+
 void printBoard(int board[][]) {
   int x, y;
 
