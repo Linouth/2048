@@ -16,8 +16,11 @@ int main(void) {
     printBoard(board);
     inp = userInput();
 
-    if (inp = -1)
+    if (inp = 5)
       break;
+
+    if (inp = 6)
+      saveBoard(board);
 
     moveTiles(board, inp);
   }
@@ -59,7 +62,7 @@ void addRandomTile(int board[][]) {
 
 int userInput() {
     char inp[8];
-    printf("Move [w/a/s/d/q]: ");
+    printf("Move [w/a/s/d/q/s]: ");
     scanf("%8s", &inp);
     inp[sizeof inp-1] = 0;-
 
@@ -77,10 +80,29 @@ int userInput() {
             return 4;
             break;
         case 'q':
-            return -1;
+            return 5;
+            break;
+        case 's':
+            return 6;
             break;
         default:
             printf("Action is not valid. \n");
             return user_input();
     }
+}
+
+saveBoard(int board[][]) {
+  int x, y;
+  FILE *save;
+
+  save = fopen("save.txt", "w");
+
+  for (x = 0; x < BOARD_SIZE; x++) {
+    for (y = 0; y < BOARD_SIZE; y++) {
+      fprintf(save, "%5d", board[x][y]);
+    }
+    fprintf(save, "\n");
+  }
+
+  fclose(save);
 }
