@@ -39,7 +39,7 @@ void addRandomTile(int board[][]) {
   }
 }
 
-int user_input() {
+int userInput() {
     char inp[8];
     printf("Move [w/a/s/d/q]: ");
     scanf("%8s", &inp);
@@ -66,8 +66,3 @@ int user_input() {
             return user_input();
     }
 }
-
-
-
-system("clear"); // Is dit uberhaupt een ding?
-// Ja
