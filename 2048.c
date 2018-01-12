@@ -21,6 +21,7 @@ int main(void) {
 
     if (inp = 6)
       saveBoard(board);
+      continue;
 
     moveTiles(board, inp);
   }
@@ -28,8 +29,19 @@ int main(void) {
   return 0;
 }
 
-void moveTiles(int board[][], int inp) {
-  // Write function
+void moveTiles(int *board, int inp) {
+  if (inp == 1) swipeUp();
+  rotateBoard(board);
+  if (inp == 2) swipeUp();
+  rotateBoard(board);
+  if (inp == 3) swipeUp();
+  rotateBoard(board);
+  if (inp == 4) swipeUp();
+  rotateBoard(board);
+}
+
+void swipeUp() {
+  // Write function here
 }
 
 void rotateBoard(int *board) {
