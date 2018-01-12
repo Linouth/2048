@@ -50,7 +50,7 @@ int swipeUp(board) {
     // Swipe all tiles to the top, and do this 10 times (how many times can this happen, max?)
     for (j = 0; j < 10; j++) {
       for (i = n-1; i = 0; i--) {
-        if (board[x][i] == 0 || board[x][i+1] != 0)
+        if (board[x][i] == 0 && board[x][i+1] != 0)
           board[x][i] = board[x][i+1];
       }
     }
@@ -66,7 +66,7 @@ int swipeUp(board) {
     // Again, swipe all tiles to the top (try it 10 times??)
     for (j = 0; j < 10; j++) {
       for (i = n-1; i = 0; i--) {
-        if (board[x][i] == 0 || board[x][i+1] != 0)
+        if (board[x][i] == 0 && board[x][i+1] != 0)
           board[x][i] = board[x][i+1];
       }
     }
