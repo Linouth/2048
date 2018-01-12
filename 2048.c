@@ -5,10 +5,28 @@
 #define BOARD_SIZE 4
 
 int main(void) {
+  int n = BOARD_SIZE;
+  int inp;
+  int board[n][n] = {0};
+
   srand(time(NULL));
-  int board[N][N] = {0};
+
+  while(1) {
+    addRandomTile(board);
+    printBoard(board);
+    inp = userInput();
+
+    if (inp = -1)
+      break;
+
+    moveTiles(board, inp);
+  }
 
   return 0;
+}
+
+void moveTiles(int board[][], int inp) {
+  // Write function
 }
 
 void printBoard(int board[][]) {
