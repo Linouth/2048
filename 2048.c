@@ -8,72 +8,77 @@ int main(void) {
   int n = BOARD_SIZE;
   int inp;
   int board[n][n] = {0};
+  int points = 0;
 
   srand(time(NULL));
 
   while(1) {
     addRandomTile(board);
-    printBoard(board);
+    printBoard(board, points);
     inp = userInput();
 
     if (inp = 5)
       break;
 
-    if (inp = 6)
+    if (inp = 6) {
       saveBoard(board);
       continue;
+    }
 
-    moveTiles(board, inp);
+    swipe(board, inp, points);
   }
 
   return 0;
 }
 
-void moveTiles(int *board, int inp) {
-  if (inp == 1) swipeUp(board);
+void swipe(int *board, int inp, int *points) {
+  if (inp == 1) swipeUp(board, points);
   rotateBoard(board);
-  if (inp == 2) swipeUp(board);
+  if (inp == 2) swipeUp(board, points);
   rotateBoard(board);
-  if (inp == 3) swipeUp(board);
+  if (inp == 3) swipeUp(board, points);
   rotateBoard(board);
-  if (inp == 4) swipeUp(board);
+  if (inp == 4) swipeUp(board, points);
   rotateBoard(board);
 }
 
-int swipeUp(board) {
+void swipeUp(int *board, int *points) {
   int n = BOARD_SIZE;
   int x, y, i, j;
 
   // Do something for each row
   for (x = 0; x < n; x++) {
 
-    // Swipe all tiles to the top, and do this 10 times (how many times can this happen, max?)
-    for (j = 0; j < 10; j++) {
-      for (i = n-1; i = 0; i--) {
-        if (board[x][i] == 0 && board[x][i+1] != 0)
-          board[x][i] = board[x][i+1];
-      }
-    }
+    // Remove empty space between tiles in a row
+    moveTilesUp(board, x);
 
-    // Add up all equal tiles
+    // Add up all equal tiles in a row
     for (y = 0; y < n; y++) {
       if (board[x][y] == board[x][y+1]) {
         board[x][y] = 2 * board[x][y];
         board[x][y+1] = 0;
+
+        points = points + board[x][y];
       }
     }
 
-    // Again, swipe all tiles to the top (try it 10 times??)
-    for (j = 0; j < 10; j++) {
-      for (i = n-1; i = 0; i--) {
-        if (board[x][i] == 0 && board[x][i+1] != 0)
-          board[x][i] = board[x][i+1];
-      }
-    }
+    // Again, remove empty space between tiles in a row
+    moveTilesUp(board, x);
 
   }
+}
 
-  return board;
+void moveTilesUp(int *board, int x) {
+  int n = BOARD_SIZE;
+  int i, j;
+
+  for (i = 0; i < 10; i++) {
+    for (j = n-1; j = 1; j--) {
+      if (board[x][j] != 0 && board[x][j-1] == 0)
+        board[x][j-1] = board[x][j];
+        board[x][j] = 0;
+    }
+  }
 }
 
 void rotateBoard(int *board) {
@@ -95,7 +100,7 @@ void rotateBoard(int *board) {
   }
 }
 
-void printBoard(int board[][]) {
+void printBoard(int board[][], points) {
   int x, y;
 
   system("clear");
@@ -106,6 +111,7 @@ void printBoard(int board[][]) {
     }
     printf("\n");
   }
+  printf("\n%d\n\n", points);
 }
 
 void addRandomTile(int board[][]) {
@@ -168,4 +174,7 @@ void saveBoard(int board[][]) {
   }
 
   fclose(save);
+
+  printf("The board is saved.\n", );
+  // Add tile delay
 }
