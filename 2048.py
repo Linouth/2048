@@ -1,7 +1,6 @@
 # Requires Python 3
 
 # What has to be done:
-# - Rewrite addRandomTile() to return game over in case no tiles can be added
 # - Write save function
 # - Write load function
 
@@ -48,19 +47,22 @@ def printBoard(board, n, score):
     print("")
 
 def addRandomTile(board, n):
-    x = random.randint(0, n-1)
-    y = random.randint(0, n-1)
-    randomness = random.randint(0, 10)
+    if any(0 in col for row in board):
+        x = random.randint(0, n-1)
+        y = random.randint(0, n-1)
+        randomness = random.randint(0, 10)
 
-    if board[x][y] != 0:
-        addRandomTile(board, n)
-    else:
-        if randomness > 0:
-            board[x][y] = 2
+        if board[x][y] != 0:
+            addRandomTile(board, n)
         else:
-            board[x][y] = 4
+            if randomness > 0:
+                board[x][y] = 2
+            else:
+                board[x][y] = 4
 
-    return board
+        return board
+    else:
+        print("Game over")
 
 def moveTilesLeft(board, n):
     for x in range(n):
