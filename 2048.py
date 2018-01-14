@@ -47,7 +47,7 @@ def printBoard(board, n, score):
     print("")
 
 def addRandomTile(board, n):
-    if any(0 in col for row in board):
+    if any(0 in row for row in board):
         x = random.randint(0, n-1)
         y = random.randint(0, n-1)
         randomness = random.randint(0, 10)
