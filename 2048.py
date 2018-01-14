@@ -13,8 +13,8 @@ def printBoard(board, n, score):
 
     for x in range(n):
         for y in range(n):
-            print(board[x][y], end=" ")
-        print("")
+            print("%5d" % (board[x][y]), end=" ")
+        print("\n")
 
     print("")
     print("Score:", score)
@@ -27,11 +27,11 @@ def addRandomTile(board, n):
 
     if board[x][y] != 0:
         addRandomTile(board, n)
-
-    if randomness > 0:
-        board[x][y] = 2
     else:
-        board[x][y] = 4
+        if randomness > 0:
+            board[x][y] = 2
+        else:
+            board[x][y] = 4
 
     return board
 
@@ -59,19 +59,16 @@ def addTiles(board, n, score):
     return board, score
 
 # Below is demo code, this is used to see if the functions behave properly until input is added
-# For some reason, it sometimes overrides existing pieces
 
 for i in range(4):
     board = addRandomTile(board, n)
 
 printBoard(board, n, score)
 
-print("NOTE: sometimes a number is overwritten by a new random number, I don't know why and it should be looked into")
 simul_count = int(input("Enter a simulation count: "))
 
 board, score = addTiles(board, n, score)
 printBoard(board, n, score)
-print("NOTE: sometimes a number is overwritten by a new random number, I don't know why and it should be looked into")
 time.sleep(1)
 
 for i in range(simul_count):
@@ -79,11 +76,9 @@ for i in range(simul_count):
     # Add a new random tile
     board = addRandomTile(board, n)
     printBoard(board, n, score)
-    print("NOTE: sometimes a number is overwritten by a new random number, I don't know why and it should be looked into")
     time.sleep(1)
 
     # Add all equal tiles
     board, score = addTiles(board, n, score)
     printBoard(board, n, score)
-    print("NOTE: sometimes a number is overwritten by a new random number, I don't know why and it should be looked into")
     time.sleep(1)
