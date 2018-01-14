@@ -1,8 +1,6 @@
 # Requires Python 3
 
 # What has to be done:
-# - Write input function
-# - Write rotate function - DONE
 # - Rewrite addRandomTile() to return game over in case no tiles can be added
 # - Write save function
 # - Write load function
@@ -14,6 +12,29 @@ import os
 n = 4
 board = [[0 for x in range(n)] for y in range(n)]
 score = 0
+
+# Source: https://stackoverflow.com/questions/510357/python-read-a-single-character-from-the-user
+def _find_getch():
+    try:
+        import termios
+    except ImportError:
+        import msvcrt
+        return msvcrt.getch
+
+    import sys, tty
+    def _getch():
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+    return _getch
+
+getch = _find_getch()
 
 def printBoard(board, n, score):
     os.system("cls" if os.name == "nt" else "clear")
@@ -64,9 +85,31 @@ def addTiles(board, n, score):
     board = moveTilesLeft(board, n)
     return board, score
 
-def inp():
-    # Write input function
-    return inp
+def getInput():
+    print("Press [w/a/s/d] or [n/q/h] ")
+    inp = getch()
+
+    if inp == "w":
+        return 3
+    elif inp == "a":
+        return 0
+    elif inp == "s":
+        return 1
+    elif inp == "d":
+        return 2
+    elif inp == "n":
+        return 4
+    elif inp == "q":
+        exit()
+    elif inp == "h":
+        print("\nPress w to move up")
+        print("Press a to move left")
+        print("Press s to move down")
+        print("Press d to move right")
+        print("Press n to create a new game")
+        print("Press q to quit")
+        print("Press h to show help\n")
+        return getInput()
 
 def rotateBoard(board, n):
     rotated_board = [[0 for x in range(n)] for y in range(n)]
@@ -100,38 +143,19 @@ def swipe(board, n, score, inp):
         board, score = addTiles(board, n, score)
     board = rotateBoard(board, n)
 
+    if inp == 4:
+        board = [[0 for x in range(n)] for y in range(n)]
+        score = 0
+
     if board != prev_board:
         board = addRandomTile(board, n)
 
     return board, score
 
-# Below is demo code, this is used to see if the functions behave properly until input is added
-# This demo code has to be removed to implement the other functions
-
-# Create 4 random tiles
-for i in range(4):
-    board = addRandomTile(board, n)
-
-# Print the board
+board = addRandomTile(board, n)
 printBoard(board, n, score)
 
-# Get simulation count
-simul_count = int(input("Enter a simulation count: "))
-
-# Add the tiles of the board
-board, score = addTiles(board, n, score)
-# time.sleep(1)
-
-for i in range(simul_count):
-
-    # Add a new random tile
-    board = addRandomTile(board, n)
+while True:
+    inp = getInput()
+    board, score = swipe(board, n, score, inp)
     printBoard(board, n, score)
-    # time.sleep(1)
-
-    # Add all equal tiles
-    board, score = addTiles(board, n, score)
-    printBoard(board, n, score)
-    # time.sleep(1)
-
-# End of the demo code
