@@ -1,5 +1,12 @@
 # Requires Python 3
 
+# What has to be done:
+# - Write input function
+# - Write rotate function
+# - Rewrite addRandomTile() to return game over in case no tiles can be added
+# - Write save function
+# - Write load function
+
 import random
 import time
 import os
@@ -16,7 +23,6 @@ def printBoard(board, n, score):
             print("%5d" % (board[x][y]), end=" ")
         print("\n")
 
-    print("")
     print("Score:", score)
     print("")
 
@@ -58,27 +64,65 @@ def addTiles(board, n, score):
     board = moveTilesLeft(board, n)
     return board, score
 
-# Below is demo code, this is used to see if the functions behave properly until input is added
+def inp():
+    # Write input function
+    return inp
 
+def rotateBoard(board, n):
+    # Write rotate function
+    return board
+
+def swipe(board, n, score, inp):
+    prev_board = board
+
+    if inp == 0:
+        board, score = addTiles(board, n, score)
+    board = rotateBoard(board, n)
+
+    if inp == 1:
+        board, score = addTiles(board, n, score)
+    board = rotateBoard(board, n)
+
+    if inp == 2:
+        board, score = addTiles(board, n, score)
+    board = rotateBoard(board, n)
+
+    if inp == 3:
+        board, score = addTiles(board, n, score)
+    board = rotateBoard(board, n)
+
+    if board != prev_board:
+        board = addRandomTile(board, n)
+
+    return board, score
+
+# Below is demo code, this is used to see if the functions behave properly until input is added
+# This demo code has to be removed to implement the other functions
+
+# Create 4 random tiles
 for i in range(4):
     board = addRandomTile(board, n)
 
+# Print the board
 printBoard(board, n, score)
 
+# Get simulation count
 simul_count = int(input("Enter a simulation count: "))
 
+# Add the tiles of the board
 board, score = addTiles(board, n, score)
-printBoard(board, n, score)
-time.sleep(1)
+# time.sleep(1)
 
 for i in range(simul_count):
 
     # Add a new random tile
     board = addRandomTile(board, n)
     printBoard(board, n, score)
-    time.sleep(1)
+    # time.sleep(1)
 
     # Add all equal tiles
     board, score = addTiles(board, n, score)
     printBoard(board, n, score)
-    time.sleep(1)
+    # time.sleep(1)
+
+# End of the demo code
