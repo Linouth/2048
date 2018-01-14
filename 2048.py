@@ -2,7 +2,7 @@
 
 # What has to be done:
 # - Write input function
-# - Write rotate function
+# - Write rotate function - DONE
 # - Rewrite addRandomTile() to return game over in case no tiles can be added
 # - Write save function
 # - Write load function
@@ -69,24 +69,33 @@ def inp():
     return inp
 
 def rotateBoard(board, n):
-    # Write rotate function
-    return board
+    rotated_board = [[0 for x in range(n)] for y in range(n)]
+
+    for x in range(n):
+        for y in range(n):
+            rotated_board[x][y] = board[n-1-y][x]
+
+    return rotated_board
 
 def swipe(board, n, score, inp):
     prev_board = board
 
+    # Swipe tiles left (a)
     if inp == 0:
         board, score = addTiles(board, n, score)
     board = rotateBoard(board, n)
 
+    # Swipe tiles down (s)
     if inp == 1:
         board, score = addTiles(board, n, score)
     board = rotateBoard(board, n)
 
+    # Swipe tiles right (d)
     if inp == 2:
         board, score = addTiles(board, n, score)
     board = rotateBoard(board, n)
 
+    # Swipe tiles up (w)
     if inp == 3:
         board, score = addTiles(board, n, score)
     board = rotateBoard(board, n)
