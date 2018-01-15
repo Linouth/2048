@@ -11,6 +11,7 @@ import os
 n = 4
 board = [[0 for x in range(n)] for y in range(n)]
 score = 0
+top_score = 0
 
 # Source: https://stackoverflow.com/questions/510357/python-read-a-single-character-from-the-user
 def _find_getch():
@@ -35,7 +36,7 @@ def _find_getch():
 
 getch = _find_getch()
 
-def printBoard(board, n, score):
+def printBoard(board, n, score, top_score):
     os.system("cls" if os.name == "nt" else "clear")
 
     for x in range(n):
@@ -43,8 +44,14 @@ def printBoard(board, n, score):
             print("%5d" % (board[x][y]), end=" ")
         print("\n")
 
-    print("Score:", score)
-    print("")
+    print("Score:\t  ", score)
+
+    if top_score < score:
+        top_score = score
+
+    print("Top score:", top_score, "\n")
+
+    return top_score
 
 def addRandomTile(board, n):
     if any(0 in row for row in board):
@@ -62,7 +69,7 @@ def addRandomTile(board, n):
 
         return board
     else:
-        print("Game over")
+        print("\n--- Game over ---")
 
 def moveTilesLeft(board, n):
     for x in range(n):
@@ -92,13 +99,13 @@ def getInput():
     inp = getch()
 
     if inp == "w":
-        return 3
-    elif inp == "a":
         return 0
-    elif inp == "s":
+    elif inp == "a":
         return 1
-    elif inp == "d":
+    elif inp == "s":
         return 2
+    elif inp == "d":
+        return 3
     elif inp == "n":
         return 4
     elif inp == "q":
@@ -111,6 +118,7 @@ def getInput():
         print("Press n to create a new game")
         print("Press q to quit")
         print("Press h to show help\n")
+        print("Copyright (c) 2018 Jasper Vinkenvleugel, Merijn den Houting, Marten Trip\n")
         return getInput()
 
 def rotateBoard(board, n):
@@ -125,25 +133,21 @@ def rotateBoard(board, n):
 def swipe(board, n, score, inp):
     prev_board = board
 
-    # Swipe tiles left (a)
-    if inp == 0:
-        board, score = addTiles(board, n, score)
     board = rotateBoard(board, n)
-
-    # Swipe tiles down (s)
-    if inp == 1:
-        board, score = addTiles(board, n, score)
-    board = rotateBoard(board, n)
-
-    # Swipe tiles right (d)
     if inp == 2:
         board, score = addTiles(board, n, score)
-    board = rotateBoard(board, n)
 
-    # Swipe tiles up (w)
+    board = rotateBoard(board, n)
     if inp == 3:
         board, score = addTiles(board, n, score)
+
     board = rotateBoard(board, n)
+    if inp == 0:
+        board, score = addTiles(board, n, score)
+
+    board = rotateBoard(board, n)
+    if inp == 1:
+        board, score = addTiles(board, n, score)
 
     if inp == 4:
         board = [[0 for x in range(n)] for y in range(n)]
@@ -154,10 +158,11 @@ def swipe(board, n, score, inp):
 
     return board, score
 
+# Initialize the game
 board = addRandomTile(board, n)
-printBoard(board, n, score)
+top_score = printBoard(board, n, score, top_score)
 
 while True:
     inp = getInput()
     board, score = swipe(board, n, score, inp)
-    printBoard(board, n, score)
+    top_score = printBoard(board, n, score, top_score)
