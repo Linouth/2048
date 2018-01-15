@@ -1,6 +1,7 @@
 # Requires Python 3
 
 # What has to be done:
+# - Make a full board stop the game if no other options are available
 # - Write save function
 # - Write load function
 
@@ -8,11 +9,13 @@ import random
 import time
 import os
 
+# Initialize variables
 n = 4
 board = [[0 for x in range(n)] for y in range(n)]
 score = 0
 top_score = 0
 
+# Function to get a character without pressing enter
 # Source: https://stackoverflow.com/questions/510357/python-read-a-single-character-from-the-user
 def _find_getch():
     try:
@@ -36,6 +39,7 @@ def _find_getch():
 
 getch = _find_getch()
 
+# Function to clear the screen and print the board
 def printBoard(board, n, score, top_score):
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -53,6 +57,7 @@ def printBoard(board, n, score, top_score):
 
     return top_score
 
+# Function to add a random tile to the board
 def addRandomTile(board, n):
     if any(0 in row for row in board):
         x = random.randint(0, n-1)
@@ -71,6 +76,7 @@ def addRandomTile(board, n):
     else:
         print("\n--- Game over ---")
 
+# Function to move the tiles to the left
 def moveTilesLeft(board, n):
     for x in range(n):
         for i in range(n+1):
@@ -81,6 +87,7 @@ def moveTilesLeft(board, n):
 
     return board
 
+# Function to add all equal tiles that are next to each other in the horizontal direction
 def addTiles(board, n, score):
     board = moveTilesLeft(board, n)
 
@@ -94,6 +101,7 @@ def addTiles(board, n, score):
     board = moveTilesLeft(board, n)
     return board, score
 
+# Function to get the user input, close the game or start a new game and display a help message
 def getInput():
     print("Press [w/a/s/d] or [n/q/h] ")
     inp = getch()
@@ -121,6 +129,7 @@ def getInput():
         print("Copyright (c) 2018 Jasper Vinkenvleugel, Merijn den Houting, Marten Trip\n")
         return getInput()
 
+# Function to rotate the board 90 degrees so that only moveTilesLeft has to be implemented
 def rotateBoard(board, n):
     rotated_board = [[0 for x in range(n)] for y in range(n)]
 
@@ -130,6 +139,7 @@ def rotateBoard(board, n):
 
     return rotated_board
 
+# Function to change the board based on the value of getInput
 def swipe(board, n, score, inp):
     prev_board = board
 
@@ -162,6 +172,7 @@ def swipe(board, n, score, inp):
 board = addRandomTile(board, n)
 top_score = printBoard(board, n, score, top_score)
 
+# Run the game
 while True:
     inp = getInput()
     board, score = swipe(board, n, score, inp)
