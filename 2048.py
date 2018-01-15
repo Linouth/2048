@@ -7,6 +7,7 @@
 
 import random
 import time
+import datetime
 import os
 
 # Initialize variables
@@ -57,6 +58,23 @@ def printBoard(board, n, score, top_score):
 
     return top_score
 
+# Function to save the game to a text file
+def saveGame(board, n, score):
+    now = datetime.datetime.now()
+
+    os.system("mkdir saves")
+    filename = "saves/game-" + str(now.year) + "-" + str(now.month) + "-" + str(now.day)
+    save = open(filename, "a")
+
+    print(score, file=save)
+    for x in range(n):
+        for y in range(n):
+            print(board[x][y], file=save)
+
+def loadGame():
+    # Write function
+    return board, score
+
 # Function to add a random tile to the board
 def addRandomTile(board, n):
     if any(0 in row for row in board):
@@ -101,7 +119,7 @@ def addTiles(board, n, score):
     board = moveTilesLeft(board, n)
     return board, score
 
-# Function to get the user input, close the game or start a new game and display a help message
+# Function to get the user input, close the game or start a new game, and display a help message
 def getInput():
     print("Press [w/a/s/d] or [n/q/h] ")
     inp = getch()
@@ -117,7 +135,12 @@ def getInput():
     elif inp == "n":
         return 4
     elif inp == "q":
-        exit()
+        print("Do you want to save the board? [y/n]")
+        inp = getch()
+        if inp == "y":
+            return 5
+        else:
+            return 6
     elif inp == "h":
         print("\nPress w to move up")
         print("Press a to move left")
@@ -162,6 +185,13 @@ def swipe(board, n, score, inp):
     if inp == 4:
         board = [[0 for x in range(n)] for y in range(n)]
         score = 0
+
+    if inp == 5:
+        saveGame(board, n, score)
+        exit()
+
+    if inp == 6:
+        exit()
 
     if board != prev_board:
         board = addRandomTile(board, n)
