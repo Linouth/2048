@@ -68,17 +68,22 @@ def saveGame(board, n, score, top_score):
 # Function to load the game on start
 def loadGame(board, n, score, top_score):
     filename = "save"
-    save = open(filename, "r")
-    saved_data = [line.rstrip("\n") for line in save]
-    
-    score = int(saved_data[0])
-    top_score = int(saved_data[1])
 
-    i = 0
-    for x in range(n):
-        for y in range(n):
-            board[x][y] = int(saved_data[i+2])
-            i = i + 1
+    if os.path.exists(filename) and os.path.getsize(filename) > 0:
+        save = open(filename, "r")
+        saved_data = [line.rstrip("\n") for line in save]
+
+        score = int(saved_data[0])
+        top_score = int(saved_data[1])
+
+        i = 0
+        for x in range(n):
+            for y in range(n):
+                board[x][y] = int(saved_data[i+2])
+                i = i + 1
+    else:
+        board = addRandomTile(board, n)
+        saveGame(board, n, score, top_score)
 
     return board, score, top_score
 
@@ -133,7 +138,11 @@ def addTiles(board, n, score):
 # Function to get the user input, close the game or start a new game, and display a help message
 def getInput():
     print("Press [w/a/s/d] or [n/q/h] ")
-    inp = getch()
+
+    if os.name == "nt":
+        inp = input()
+    else:
+        inp = getch()
 
     if inp == "w":
         return 0
