@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}{% if self.title() %} | {% endif %}{{ config['SITE_NAME'] }}</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        <meta name=robots" content="noindex">
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/image.css') }}" />
+        <!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}" /> -->
+
+        <!-- <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script> -->
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    </head>
+
+    <body>
+        <div class="container">
+
+
+            {% for score in query %}
+            <div class="score">
+                <span class="timestamp">{{ score.timestamp }}</span> - 
+                <span class="player">{{ score.player }}</span> - 
+                <span class="score">{{ score.score }}</span>
+            </div>
+            {% endfor %}
+
+        </div>
+    </body>
+</html>
+
