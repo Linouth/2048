@@ -3,6 +3,9 @@
 import random
 import time
 import os
+import getpass
+import json
+import requests
 
 # Initialize variables
 n = 4
@@ -87,6 +90,16 @@ def loadGame(board, n, score, top_score):
 
     return board, score, top_score
 
+# Function to upload the top_score to the leaderboard
+def uploadScore(top_score):
+    player = getpass.getuser()
+    url = "http://marten.xyz:5000/new"
+
+    leaderboard = {"player": player, "score": top_score}
+    leaderboard = json.dumps(leaderboard)
+
+    requests.post(url, leaderboard)
+
 # Function to add a random tile to the board
 def addRandomTile(board, n):
     count = 0
@@ -137,7 +150,7 @@ def addTiles(board, n, score):
 
 # Function to get the user input, close the game or start a new game, and display a help message
 def getInput():
-    print("Press [w/a/s/d] or [n/q/h] ")
+    print("Press [w/a/s/d] or [n/l/h/q] ")
 
     if os.name == "nt":
         inp = input()
@@ -154,18 +167,23 @@ def getInput():
         return 3
     elif inp == "n":
         return 4
-    elif inp == "q":
-        return 5
+    elif inp == "l":
+        print("\nCheck out the global leaderboard at http://marten.xyz/5000\n")
+        uploadScore(top_score)
+        return getInput()
     elif inp == "h":
         print("\nPress w to move up")
         print("Press a to move left")
         print("Press s to move down")
         print("Press d to move right")
         print("Press n to create a new game")
-        print("Press q to quit")
-        print("Press h to show help\n")
+        print("Press l to go to the leaderboard")
+        print("Press h to show help")
+        print("Press q to quit\n")
         print("Copyright (c) 2018 Jasper Vinkenvleugel, Merijn den Houting, Marten Trip\n")
         return getInput()
+    elif inp == "q":
+        return 5
 
 # Function to rotate the board 90 degrees so that only moveTilesLeft has to be implemented
 def rotateBoard(board, n):
@@ -210,6 +228,7 @@ def swipe(board, n, score, top_score, inp):
 
     if inp == 5:
         saveGame(board, n, score, top_score)
+        uploadScore(top_score)
         exit()
 
     if board == prev_board:
