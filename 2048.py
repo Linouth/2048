@@ -1,13 +1,10 @@
 # Requires Python 3
 
 # What has to be done:
-# - Make a full board stop the game if no other options are available
-# - Write save function
 # - Write load function
 
 import random
 import time
-import datetime
 import os
 
 # Initialize variables
@@ -59,40 +56,48 @@ def printBoard(board, n, score, top_score):
     return top_score
 
 # Function to save the game to a text file
-def saveGame(board, n, score):
-    now = datetime.datetime.now()
+def saveGame(board, n, score, top_score):
+    filename = "save"
 
-    os.system("mkdir saves")
-    filename = "saves/game-" + str(now.year) + "-" + str(now.month) + "-" + str(now.day)
-    save = open(filename, "a")
-
+    save = open(filename, "w")
     print(score, file=save)
+
+    save = open(filename, "a")
+    print(top_score, file=save)
     for x in range(n):
         for y in range(n):
             print(board[x][y], file=save)
 
-def loadGame():
-    # Write function
-    return board, score
+def loadGame(board, n, score, top_score):
+    filename = "save"
+    save = open(filename, "r")
+
+    # Read the file line by line and parse it to board, score and top_score
+
+    return board, score, top_score
 
 # Function to add a random tile to the board
 def addRandomTile(board, n):
-    if any(0 in row for row in board):
+    count = 0
+
+    while True:
         x = random.randint(0, n-1)
         y = random.randint(0, n-1)
         randomness = random.randint(0, 10)
 
-        if board[x][y] != 0:
-            addRandomTile(board, n)
+        if count > n**2:
+            break
+        elif board[x][y] != 0:
+            count = count + 1
+            continue
         else:
             if randomness > 0:
                 board[x][y] = 2
             else:
                 board[x][y] = 4
+            break
 
-        return board
-    else:
-        print("\n--- Game over ---")
+    return board
 
 # Function to move the tiles to the left
 def moveTilesLeft(board, n):
@@ -135,12 +140,7 @@ def getInput():
     elif inp == "n":
         return 4
     elif inp == "q":
-        print("Do you want to save the board? [y/n]")
-        inp = getch()
-        if inp == "y":
-            return 5
-        else:
-            return 6
+        return 5
     elif inp == "h":
         print("\nPress w to move up")
         print("Press a to move left")
@@ -162,10 +162,8 @@ def rotateBoard(board, n):
 
     return rotated_board
 
-# Function to change the board based on the value of getInput
-def swipe(board, n, score, inp):
-    prev_board = board
-
+# Function to rotate the board and then move tiles based on the input
+def moveTiles(board, n, score, inp):
     board = rotateBoard(board, n)
     if inp == 2:
         board, score = addTiles(board, n, score)
@@ -182,28 +180,52 @@ def swipe(board, n, score, inp):
     if inp == 1:
         board, score = addTiles(board, n, score)
 
+    return board, score
+
+# Function to change the board based on the value of getInput
+def swipe(board, n, score, top_score, inp):
+    prev_board = board
+
+    board, score = moveTiles(board, n, score, inp)
+
     if inp == 4:
         board = [[0 for x in range(n)] for y in range(n)]
         score = 0
+        board = addRandomTile(board, n)
 
     if inp == 5:
-        saveGame(board, n, score)
+        saveGame(board, n, score, top_score)
         exit()
 
-    if inp == 6:
-        exit()
+    if board == prev_board:
+        simul_board = board
+        simul_score = 0
+        simul_inp = 0
 
-    if board != prev_board:
+        for simul_input in range(4):
+            simul_board, simul_score = moveTiles(simul_board, n, simul_score, simul_inp)
+            simul_board = addRandomTile(simul_board, n)
+
+        if simul_board == board:
+            print("\n--- Game over ---\n")
+
+            board = [[0 for x in range(n)] for y in range(n)]
+            board = addRandomTile(board, n)
+            saveGame(board, n, score, top_score)
+            exit()
+
+    elif board != prev_board and inp != 4:
         board = addRandomTile(board, n)
 
     return board, score
 
 # Initialize the game
+# board, score, top_score = loadGame(board, n, score, top_score)
 board = addRandomTile(board, n)
 top_score = printBoard(board, n, score, top_score)
 
 # Run the game
 while True:
     inp = getInput()
-    board, score = swipe(board, n, score, inp)
+    board, score = swipe(board, n, score, top_score, inp)
     top_score = printBoard(board, n, score, top_score)
