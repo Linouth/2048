@@ -70,7 +70,7 @@ def loadGame(board, n, score, top_score):
     filename = "save"
     save = open(filename, "r")
     saved_data = [line.rstrip("\n") for line in save]
-
+    
     score = int(saved_data[0])
     top_score = int(saved_data[1])
 
@@ -79,8 +79,6 @@ def loadGame(board, n, score, top_score):
         for y in range(n):
             board[x][y] = int(saved_data[i+2])
             i = i + 1
-
-    # Read the file line by line and parse it to board, score and top_score
 
     return board, score, top_score
 
