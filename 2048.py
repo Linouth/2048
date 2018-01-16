@@ -190,8 +190,8 @@ def swipe(board, n, score, top_score, inp):
 
     if inp == 4:
         board = [[0 for x in range(n)] for y in range(n)]
-        score = 0
         board = addRandomTile(board, n)
+        score = 0
 
     if inp == 5:
         saveGame(board, n, score, top_score)
@@ -202,15 +202,16 @@ def swipe(board, n, score, top_score, inp):
         simul_score = 0
         simul_inp = 0
 
-        for simul_input in range(4):
+        for simul_inp in range(2):
             simul_board, simul_score = moveTiles(simul_board, n, simul_score, simul_inp)
-            simul_board = addRandomTile(simul_board, n)
 
         if simul_board == board:
             print("\n--- Game over ---\n")
 
             board = [[0 for x in range(n)] for y in range(n)]
             board = addRandomTile(board, n)
+            score = 0
+
             saveGame(board, n, score, top_score)
             exit()
 
