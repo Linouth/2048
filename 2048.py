@@ -1,8 +1,5 @@
 # Requires Python 3
 
-# What has to be done:
-# - Write load function
-
 import random
 import time
 import os
@@ -68,9 +65,20 @@ def saveGame(board, n, score, top_score):
         for y in range(n):
             print(board[x][y], file=save)
 
+# Function to load the game on start
 def loadGame(board, n, score, top_score):
     filename = "save"
     save = open(filename, "r")
+    saved_data = [line.rstrip("\n") for line in save]
+
+    score = int(saved_data[0])
+    top_score = int(saved_data[1])
+
+    i = 0
+    for x in range(n):
+        for y in range(n):
+            board[x][y] = int(saved_data[i+2])
+            i = i + 1
 
     # Read the file line by line and parse it to board, score and top_score
 
@@ -198,22 +206,25 @@ def swipe(board, n, score, top_score, inp):
         exit()
 
     if board == prev_board:
-        simul_board = board
-        simul_score = 0
-        simul_inp = 0
+        if any(0 in sublist for sublist in board):
+            return board, score
+        else:
+            simul_board = board
+            simul_score = 0
+            simul_inp = 0
 
-        for simul_inp in range(2):
-            simul_board, simul_score = moveTiles(simul_board, n, simul_score, simul_inp)
+            for simul_inp in range(4):
+                simul_board, simul_score = moveTiles(simul_board, n, simul_score, simul_inp)
 
-        if simul_board == board:
-            print("\n--- Game over ---\n")
+            if simul_board == board:
+                print("\n--- Game over ---\n")
 
-            board = [[0 for x in range(n)] for y in range(n)]
-            board = addRandomTile(board, n)
-            score = 0
+                board = [[0 for x in range(n)] for y in range(n)]
+                board = addRandomTile(board, n)
+                score = 0
 
-            saveGame(board, n, score, top_score)
-            exit()
+                saveGame(board, n, score, top_score)
+                exit()
 
     elif board != prev_board and inp != 4:
         board = addRandomTile(board, n)
@@ -221,8 +232,7 @@ def swipe(board, n, score, top_score, inp):
     return board, score
 
 # Initialize the game
-# board, score, top_score = loadGame(board, n, score, top_score)
-board = addRandomTile(board, n)
+board, score, top_score = loadGame(board, n, score, top_score)
 top_score = printBoard(board, n, score, top_score)
 
 # Run the game
